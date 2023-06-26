@@ -1,3 +1,4 @@
+
 # PayloadMaster
 
 PayloadMaster is a script that allows you to create various types of payloads and listeners for different operating systems. It leverages Metasploit Framework's msfvenom and msfconsole to generate and handle the payloads.
@@ -6,22 +7,39 @@ PayloadMaster is a script that allows you to create various types of payloads an
 
 - Metasploit Framework: Make sure you have Metasploit Framework installed and set up on your system.
 
+## Installation
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/lohitkolluri/PayloadMaster.git
+   ```
+
+2. Change directory to the cloned repository:
+   ```bash
+   cd PayloadMaster
+   ```
+
 ## Usage
 
-1. Run the script using the following command:
+1. Give execute permissions to the script:
+   ```bash
+   chmod +x PayloadMaster.sh
    ```
+
+2. Run the script using the following command:
+   ```bash
    ./PayloadMaster.sh
    ```
 
-2. Select an option from the menu to create a payload and listener for the desired target.
+3. Select an option from the menu to create a payload and listener for the desired target.
 
-3. Follow the prompts to provide the necessary details such as payload name, LHOST, and LPORT.
+4. Follow the prompts to provide the necessary details such as payload name, LHOST, and LPORT.
 
-4. If needed, configure the listener with different LHOST and LPORT.
+5. If needed, configure the listener with different LHOST and LPORT.
 
-5. The script will generate the payload file and start the listener using msfconsole.
+6. The script will generate the payload file and start the listener using msfconsole.
 
-6. Proceed with the instructions provided by the script and Metasploit Framework to exploit the target or test its vulnerability.
+7. Proceed with the instructions provided by the script and Metasploit Framework to exploit the target or test its vulnerability.
 
 ## Options
 
@@ -43,4 +61,3 @@ The script provides the following options:
 ## Disclaimer
 
 This script is intended for educational and ethical purposes only. Use it responsibly and only on authorized systems.
-
