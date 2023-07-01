@@ -1,4 +1,3 @@
-
 # PayloadMaster
 
 PayloadMaster is a script that allows you to create various types of payloads and listeners for different operating systems. It leverages Metasploit Framework's msfvenom and msfconsole to generate and handle the payloads.
