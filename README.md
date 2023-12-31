@@ -1,45 +1,53 @@
-# PayloadMaster
+<h1 align="center" id="title">PayloadMaster</h1>
 
-PayloadMaster is a bash script that streamlines the process of creating Metasploit payloads, setting up listeners for different platforms, scanning for MS17-010 vulnerabilities, and exploiting Windows targets using MS17-010 (EternalBlue).
+<p id="description">PayloadMaster is a bash script that streamlines the process of creating Metasploit payloads setting up listeners for different platforms scanning for MS17-010 vulnerabilities and exploiting Windows targets using MS17-010 (EternalBlue).</p>
 
-## Prerequisites
+  
+  
+<h2>🧐 Features</h2>
 
-- Metasploit Framework
-- Bash shell (Linux and macOS)
+Here're some of the project's best features:
 
-## Usage
+*   Supports Windows Linux and Android platforms.
+*   Allows you to choose the payload type based on the selected platform.
+*   Scans for MS17-010 vulnerabilities.
+*   Exploits Windows targets using MS17-010 (EternalBlue).
+*   Enables Remote Desktop on Windows targets using MS17-010.
+*   Creates payloads with a link (HTA Server).
 
-1. **Clone the repository:**
+<h2>⚙️ Prerequisites</h2>
 
-   ```bash
-   git clone https://github.com/lohitkolluri/PayloadMaster.git
-   ```
+* Metasploit Framework
+* Bash shell (Linux and macOS)
 
-2. **Navigate to the script directory:**
+<h2>🛠️ Installation Steps:</h2>
 
-   ```bash
-   cd PayloadMaster
-   ```
+<p>1. Clone the repository:</p>
 
-3. **Make the script executable:**
+```
+git clone https://github.com/lohitkolluri/PayloadMaster.git
+```
 
-   ```bash
-   chmod +x payloadmaster.sh
-   ```
+<p>2. Navigate to the script directory:</p>
 
-4. **Run the script:**
+```
+cd PayloadMaster
+```
 
-   ```bash
-   ./payloadmaster.sh
-   ```
+<p>3. Make the script executable:</p>
 
-5. **Follow the on-screen instructions to create payloads, scan for vulnerabilities, and exploit targets.**
+```
+chmod +x payloadmaster.sh
+```
 
-## Features
+<p>4. Run the script:</p>
 
-- Supports Windows, Linux, and Android platforms.
-- Allows you to choose the payload type based on the selected platform.
-- Scans for MS17-010 vulnerabilities.
-- Exploits Windows targets using MS17-010 (EternalBlue).
-- Enables Remote Desktop on Windows targets using MS17-010.
-- Creates payloads with a link (HTA Server).
+```
+./payloadmaster.sh
+```
+
+<p>5. Follow the on-screen instructions to create payloads scan for vulnerabilities and exploit targets.</p>
+
+<h2>🛡️ License:</h2>
+
+This project is licensed under the [MIT License](LICENSE)
